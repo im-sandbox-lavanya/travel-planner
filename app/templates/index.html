@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}My Travel Plans{% endblock %}
+
+{% block content %}
+<h1>My Travel Plans</h1>
+
+{% if plans %}
+<div class="card-grid">
+    {% for plan in plans %}
+    <div class="card">
+        <h2><a href="/plans/{{ plan.id }}">{{ plan.destination }}</a></h2>
+        <p class="dates">{{ plan.start_date }} &mdash; {{ plan.end_date }}</p>
+        {% if plan.budget %}
+        <p class="budget">${{ "%.2f"|format(plan.budget) }}</p>
+        {% endif %}
+        {% if plan.notes %}
+        <p class="notes">{{ plan.notes | truncate(80) }}</p>
+        {% endif %}
+        <div class="card-actions">
+            <a href="/plans/{{ plan.id }}" class="btn btn-sm">View</a>
+            <a href="/plans/{{ plan.id }}/edit" class="btn btn-sm btn-outline">Edit</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No travel plans yet. Start planning your next adventure!</p>
+    <a href="/plans/new" class="btn">+ Create Your First Plan</a>
+</div>
+{% endif %}
+{% endblock %}

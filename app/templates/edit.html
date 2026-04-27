@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Edit – {{ plan.destination }}{% endblock %}
+
+{% block content %}
+<h1>Edit Travel Plan</h1>
+
+{% if errors %}
+<div class="alert alert-error">
+    <ul>
+    {% for err in errors %}
+        <li>{{ err }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form method="post" action="/plans/{{ plan.id }}/edit" class="plan-form">
+    <label for="destination">Destination</label>
+    <input type="text" id="destination" name="destination" required value="{{ plan.destination }}">
+
+    <label for="start_date">Start Date</label>
+    <input type="date" id="start_date" name="start_date" required value="{{ plan.start_date }}">
+
+    <label for="end_date">End Date</label>
+    <input type="date" id="end_date" name="end_date" required value="{{ plan.end_date }}">
+
+    <label for="budget">Budget ($)</label>
+    <input type="number" id="budget" name="budget" step="0.01" min="0"
+           value="{{ plan.budget if plan.budget else '' }}">
+
+    <label for="notes">Notes</label>
+    <textarea id="notes" name="notes" rows="4">{{ plan.notes if plan.notes else '' }}</textarea>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Save Changes</button>
+        <a href="/plans/{{ plan.id }}" class="btn btn-outline">Cancel</a>
+    </div>
+</form>
+{% endblock %}

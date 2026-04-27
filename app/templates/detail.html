@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ plan.destination if plan else "Not Found" }}{% endblock %}
+
+{% block content %}
+{% if plan %}
+<div class="detail">
+    <h1>{{ plan.destination }}</h1>
+    <table class="detail-table">
+        <tr><th>Start Date</th><td>{{ plan.start_date }}</td></tr>
+        <tr><th>End Date</th><td>{{ plan.end_date }}</td></tr>
+        {% if plan.budget %}
+        <tr><th>Budget</th><td>${{ "%.2f"|format(plan.budget) }}</td></tr>
+        {% endif %}
+        {% if plan.notes %}
+        <tr><th>Notes</th><td>{{ plan.notes }}</td></tr>
+        {% endif %}
+        <tr><th>Created</th><td>{{ plan.created_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+    </table>
+
+    <div class="detail-actions">
+        <a href="/plans/{{ plan.id }}/edit" class="btn">Edit</a>
+        <form method="post" action="/plans/{{ plan.id }}/delete" class="inline-form"
+              onsubmit="return confirm('Delete this plan?')">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+        <a href="/" class="btn btn-outline">Back to List</a>
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <h1>Plan Not Found</h1>
+    <p>The travel plan you're looking for doesn't exist.</p>
+    <a href="/" class="btn">Back to List</a>
+</div>
+{% endif %}
+{% endblock %}
