@@ -1,11 +1,22 @@
 [
   {
     "id": "35e71e311db94c1b82c2a75aeb289341",
+    "user_name": "",
     "destination": "Kashmir",
     "start_date": "2026-08-07",
     "end_date": "2026-08-27",
     "budget": 500.0,
     "notes": null,
     "created_at": "2026-04-27T16:37:55.809890"
+  },
+  {
+    "id": "91131fc75c984394be283ff50d064e25",
+    "user_name": "Alice Smith",
+    "destination": "Paris, France",
+    "start_date": "2026-07-01",
+    "end_date": "2026-07-14",
+    "budget": 2000.0,
+    "notes": "Eiffel Tower visit",
+    "created_at": "2026-04-27T11:15:33.023820"
   }
 ]

@@ -10,6 +10,9 @@
     {% for plan in plans %}
     <div class="card">
         <h2><a href="/plans/{{ plan.id }}">{{ plan.destination }}</a></h2>
+        {% if plan.user_name %}
+        <p class="user-name">{{ plan.user_name }}</p>
+        {% endif %}
         <p class="dates">{{ plan.start_date }} &mdash; {{ plan.end_date }}</p>
         {% if plan.budget %}
         <p class="budget">${{ "%.2f"|format(plan.budget) }}</p>
