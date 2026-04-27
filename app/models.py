@@ -7,6 +7,7 @@ from pydantic import BaseModel, model_validator
 class TravelPlanCreate(BaseModel):
     """Schema for creating / updating a travel plan (form input)."""
 
+    user_name: str
     destination: str
     start_date: date
     end_date: date
@@ -24,6 +25,7 @@ class TravelPlan(BaseModel):
     """Full travel plan stored on disk."""
 
     id: str
+    user_name: str
     destination: str
     start_date: date
     end_date: date
