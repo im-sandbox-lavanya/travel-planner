@@ -13,7 +13,7 @@
         <tr><th>Budget</th><td>${{ "%.2f"|format(plan.budget) }}</td></tr>
         {% endif %}
         {% if plan.notes %}
-        <tr><th>Notes</th><td>{{ plan.notes }}</td></tr>
+        <tr><th>Notes</th><td>{{ plan.notes | safe }}</td></tr>
         {% endif %}
         <tr><th>Created</th><td>{{ plan.created_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
     </table>

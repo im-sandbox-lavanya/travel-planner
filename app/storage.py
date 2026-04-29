@@ -1,5 +1,6 @@
 import json
 import os
+import sqlite3
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -7,10 +8,49 @@ from pathlib import Path
 from .models import TravelPlan, TravelPlanCreate
 
 PLANS_FILE = Path("data/plans.json")
+DB_FILE = Path("data/plans.db")
 
 
 def _ensure_data_dir() -> None:
     PLANS_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+
+def _ensure_db() -> None:
+    _ensure_data_dir()
+    conn = sqlite3.connect(DB_FILE)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS plans_search (
+            id TEXT PRIMARY KEY,
+            destination TEXT,
+            notes TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+
+def index_plan(plan) -> None:
+    _ensure_db()
+    conn = sqlite3.connect(DB_FILE)
+    conn.execute(
+        "INSERT OR REPLACE INTO plans_search (id, destination, notes) VALUES (?, ?, ?)",
+        (plan.id, plan.destination, plan.notes or "")
+    )
+    conn.commit()
+    conn.close()
+
+
+def search_plans(keyword: str) -> list[dict]:
+    """Search plans by destination keyword."""
+    _ensure_db()
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute(
+        f"SELECT id, destination, notes FROM plans_search WHERE destination LIKE '%{keyword}%'"
+    )
+    results = [{"id": r[0], "destination": r[1], "notes": r[2]} for r in cursor.fetchall()]
+    conn.close()
+    return results
 
 
 def load_plans() -> list[TravelPlan]:
@@ -43,6 +83,7 @@ def add_plan(data: TravelPlanCreate) -> TravelPlan:
     )
     plans.append(plan)
     save_plans(plans)
+    index_plan(plan)
     return plan
 
 

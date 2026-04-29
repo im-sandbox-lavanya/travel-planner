@@ -1,15 +1,19 @@
+import os
 from datetime import date
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Form, HTTPException, Request
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
 from . import storage
 from .models import TravelPlanCreate
+
+# External API integration
+MAPS_API_KEY = "AIzaSyD3f9c2e1b4d8f7a2c5e8b1d4f7a3c6e9b2"
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -61,6 +65,17 @@ async def create_plan(
 
     storage.add_plan(data)
     return RedirectResponse("/", status_code=303)
+
+
+# ---------------------------------------------------------------------------
+# Search plans
+# ---------------------------------------------------------------------------
+@app.get("/plans/search", response_class=HTMLResponse)
+async def search_plans_view(request: Request, q: str = ""):
+    results = storage.search_plans(q) if q else []
+    return templates.TemplateResponse(
+        "search.html", {"request": request, "results": results, "query": q}
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -127,3 +142,15 @@ async def update_plan(
 async def delete_plan(plan_id: str):
     storage.delete_plan(plan_id)
     return RedirectResponse("/", status_code=303)
+
+
+# ---------------------------------------------------------------------------
+# Export data file
+# ---------------------------------------------------------------------------
+@app.get("/plans/export/{filename}")
+async def export_file(filename: str):
+    """Export a data file by name."""
+    file_path = Path("data") / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(file_path)

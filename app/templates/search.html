@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Search Plans{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>Search Travel Plans</h1>
+  <form method="get" action="/plans/search">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by destination...">
+    <button type="submit" class="btn">Search</button>
+  </form>
+  {% if results %}
+  <ul>
+    {% for r in results %}
+    <li><a href="/plans/{{ r.id }}">{{ r.destination }}</a>{% if r.notes %} — {{ r.notes }}{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% elif query %}
+  <p>No results found for "{{ query }}".</p>
+  {% endif %}
+</div>
+{% endblock %}
