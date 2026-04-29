@@ -43,6 +43,7 @@ async def create_form(request: Request):
 @app.post("/plans", response_class=HTMLResponse)
 async def create_plan(
     request: Request,
+    user_name: str = Form(...),
     destination: str = Form(...),
     start_date: date = Form(...),
     end_date: date = Form(...),
@@ -51,6 +52,7 @@ async def create_plan(
 ):
     try:
         data = TravelPlanCreate(
+            user_name=user_name,
             destination=destination,
             start_date=start_date,
             end_date=end_date,
@@ -108,6 +110,7 @@ async def edit_form(request: Request, plan_id: str):
 async def update_plan(
     request: Request,
     plan_id: str,
+    user_name: str = Form(...),
     destination: str = Form(...),
     start_date: date = Form(...),
     end_date: date = Form(...),
@@ -116,6 +119,7 @@ async def update_plan(
 ):
     try:
         data = TravelPlanCreate(
+            user_name=user_name,
             destination=destination,
             start_date=start_date,
             end_date=end_date,
