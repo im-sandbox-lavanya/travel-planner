@@ -28,6 +28,10 @@ uvicorn app.main:app --reload
 
 Open **http://127.0.0.1:8000** in your browser.
 
+## Technical Documentation
+
+For an overview of the app architecture, data model, persistence layer, and route behavior, see [docs/technical-documentation.md](docs/technical-documentation.md).
+
 ## Project Structure
 
 ```
@@ -36,7 +40,7 @@ travel-planner/
 │   ├── __init__.py
 │   ├── main.py          # FastAPI app & routes
 │   ├── models.py         # Pydantic schemas
-│   ├── storage.py        # JSON file CRUD operations
+│   ├── storage.py        # JSON + SQLite persistence
 │   ├── static/
 │   │   └── style.css     # Stylesheet
 │   └── templates/
@@ -44,9 +48,14 @@ travel-planner/
 │       ├── index.html    # Plans list
 │       ├── create.html   # New plan form
 │       ├── detail.html   # Plan detail view
-│       └── edit.html     # Edit plan form
+│       ├── edit.html     # Edit plan form
+│       └── search.html   # Search results view
 ├── data/                  # Auto-created at runtime
-│   └── plans.json
+│   ├── plans.json
+│   └── plans.db
+├── docs/
+│   └── technical-documentation.md
 ├── requirements.txt
-└── README.md
+├── README.md
+└── .gitignore
 ```
