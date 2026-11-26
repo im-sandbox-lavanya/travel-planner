@@ -4,6 +4,14 @@ from typing import Optional
 from pydantic import BaseModel, model_validator
 
 
+class PackingItem(BaseModel):
+    """An item in a travel plan packing checklist."""
+
+    id: str
+    name: str
+    packed: bool = False
+
+
 class TravelPlanCreate(BaseModel):
     """Schema for creating / updating a travel plan (form input)."""
 
@@ -30,3 +38,4 @@ class TravelPlan(BaseModel):
     budget: Optional[float] = None
     notes: Optional[str] = None
     created_at: datetime
+    packing_items: list[PackingItem] = []

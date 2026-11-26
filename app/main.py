@@ -145,6 +145,33 @@ async def delete_plan(plan_id: str):
 
 
 # ---------------------------------------------------------------------------
+# Packing checklist
+# ---------------------------------------------------------------------------
+@app.post("/plans/{plan_id}/packing-items")
+async def add_packing_item(plan_id: str, name: str = Form(...)):
+    name = name.strip()
+    if not name:
+        raise HTTPException(status_code=422, detail="Packing item name is required")
+    if not storage.add_packing_item(plan_id, name):
+        raise HTTPException(status_code=404, detail="Plan not found")
+    return RedirectResponse(f"/plans/{plan_id}", status_code=303)
+
+
+@app.post("/plans/{plan_id}/packing-items/{item_id}/toggle")
+async def toggle_packing_item(plan_id: str, item_id: str):
+    if not storage.toggle_packing_item(plan_id, item_id):
+        raise HTTPException(status_code=404, detail="Packing item not found")
+    return RedirectResponse(f"/plans/{plan_id}", status_code=303)
+
+
+@app.post("/plans/{plan_id}/packing-items/{item_id}/delete")
+async def delete_packing_item(plan_id: str, item_id: str):
+    if not storage.delete_packing_item(plan_id, item_id):
+        raise HTTPException(status_code=404, detail="Packing item not found")
+    return RedirectResponse(f"/plans/{plan_id}", status_code=303)
+
+
+# ---------------------------------------------------------------------------
 # Export data file
 # ---------------------------------------------------------------------------
 @app.get("/plans/export/{filename}")

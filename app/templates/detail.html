@@ -18,6 +18,51 @@
         <tr><th>Created</th><td>{{ plan.created_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
     </table>
 
+    <section class="packing-checklist">
+        <div class="packing-heading">
+            <h2>Packing Checklist</h2>
+            {% set packed_count = plan.packing_items | selectattr("packed") | list | length %}
+            {% set total_count = plan.packing_items | length %}
+            {% if total_count %}
+            <span class="packing-progress">{{ packed_count }} of {{ total_count }} packed</span>
+            {% endif %}
+        </div>
+
+        {% if total_count %}
+        <div class="progress-track" aria-label="{{ packed_count }} of {{ total_count }} items packed">
+            <div class="progress-fill" style="width: {{ (packed_count * 100 / total_count) | round | int }}%"></div>
+        </div>
+        {% endif %}
+
+        <form method="post" action="/plans/{{ plan.id }}/packing-items" class="packing-add-form">
+            <label class="sr-only" for="packing-item-name">Packing item</label>
+            <input type="text" id="packing-item-name" name="name" required maxlength="120"
+                   placeholder="Add an item (e.g. Passport)">
+            <button type="submit" class="btn">Add</button>
+        </form>
+
+        {% if plan.packing_items %}
+        <ul class="packing-list">
+            {% for item in plan.packing_items %}
+            <li class="{% if item.packed %}packed{% endif %}">
+                <form method="post" action="/plans/{{ plan.id }}/packing-items/{{ item.id }}/toggle">
+                    <button type="submit" class="packing-toggle"
+                            aria-label="{% if item.packed %}Mark {{ item.name }} as not packed{% else %}Mark {{ item.name }} as packed{% endif %}">
+                        <span class="packing-checkbox">{% if item.packed %}&#10003;{% endif %}</span>
+                        <span class="packing-name">{{ item.name }}</span>
+                    </button>
+                </form>
+                <form method="post" action="/plans/{{ plan.id }}/packing-items/{{ item.id }}/delete">
+                    <button type="submit" class="packing-delete" aria-label="Delete {{ item.name }}">&#215;</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="packing-empty">Nothing packed yet. Add your first item above.</p>
+        {% endif %}
+    </section>
+
     <div class="detail-actions">
         <a href="/plans/{{ plan.id }}/edit" class="btn">Edit</a>
         <form method="post" action="/plans/{{ plan.id }}/delete" class="inline-form"
