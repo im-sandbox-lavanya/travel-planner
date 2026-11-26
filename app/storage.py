@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 
-from .models import TravelPlan, TravelPlanCreate
+from .models import PackingItem, TravelPlan, TravelPlanCreate
 
 PLANS_FILE = Path("data/plans.json")
 DB_FILE = Path("data/plans.db")
@@ -105,3 +105,40 @@ def delete_plan(plan_id: str) -> bool:
         return False
     save_plans(new_plans)
     return True
+
+
+def add_packing_item(plan_id: str, name: str) -> PackingItem | None:
+    plans = load_plans()
+    item = PackingItem(id=uuid.uuid4().hex, name=name)
+    for plan in plans:
+        if plan.id == plan_id:
+            plan.packing_items.append(item)
+            save_plans(plans)
+            return item
+    return None
+
+
+def toggle_packing_item(plan_id: str, item_id: str) -> bool:
+    plans = load_plans()
+    for plan in plans:
+        if plan.id == plan_id:
+            for item in plan.packing_items:
+                if item.id == item_id:
+                    item.packed = not item.packed
+                    save_plans(plans)
+                    return True
+    return False
+
+
+def delete_packing_item(plan_id: str, item_id: str) -> bool:
+    plans = load_plans()
+    for plan in plans:
+        if plan.id == plan_id:
+            original_count = len(plan.packing_items)
+            plan.packing_items = [
+                item for item in plan.packing_items if item.id != item_id
+            ]
+            if len(plan.packing_items) != original_count:
+                save_plans(plans)
+                return True
+    return False

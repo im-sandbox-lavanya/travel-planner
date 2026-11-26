@@ -11,6 +11,7 @@ Built with **FastAPI**, **Jinja2** templates, and **JSON file** storage.
 - Edit existing plans
 - Delete plans you no longer need
 - Date validation (end date must be on or after start date)
+- Manage a packing checklist for each travel plan
 
 ## Prerequisites
 
